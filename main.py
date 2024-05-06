@@ -45,8 +45,35 @@ loader = transforms.Compose(
     ]
 )
 
-original_image = load_image("sample.png")
+original_img = load_image("sample.png")
 style_img = load_image("style.jpg")
 
+model = VGG().to(device).eval()
 # generated = torch.randn(original_image.shape, device=device, requires_grad=True)
-generated = original_image.clone().requieres_grad(True)
+generated = original_img.clone().requieres_grad(True)
+
+# Hyperparameters
+total_steps = 6000
+learning_rate = 0.001
+alpha = 1
+beta = 0.01
+
+optimizer = optim.Adam([generated], lr=learning_rate)
+
+for step in range(total_steps):
+    generated_features = model(generated)
+    original_img_features = model(original_img)
+    style_features = model(style_img)
+
+    style_loss = original_loss = 0
+
+    for gen_feature, orig_feature, style_feature in zip(
+            generated_features, original_img_features, style_features
+    ):
+        batch_size, channel, height, width = gen_feature.shape
+        original_loss += torch.mean((gen_feature - orig_feature) ** 2)
+
+        # Compute Gram Matrix
+        G = gen_feature.view(channel, height * width).mm(
+            gen_feature.view(channel, height * width).t()
+        )

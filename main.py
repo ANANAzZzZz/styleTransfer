@@ -26,3 +26,27 @@ class VGG(nn.Module):
                 features.append(x)
 
         return features
+
+
+def load_image(image_name):
+    image = Image.open(image_name)
+    image = loader(image).unsqueeze(0)
+    return image.to(device)
+
+
+device = torch.device("cuda" if torch.cuda.is_available else "cpu")
+image_size = 356
+
+loader = transforms.Compose(
+    [
+        transforms.Resize((image_size, image_size)),
+        transforms.ToTensor(),
+        # transform.Normalize(mean=[], std[])
+    ]
+)
+
+original_image = load_image("sample.png")
+style_img = load_image("style.jpg")
+
+# generated = torch.randn(original_image.shape, device=device, requires_grad=True)
+generated = original_image.clone().requieres_grad(True)

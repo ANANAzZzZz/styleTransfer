@@ -36,7 +36,7 @@ def load_image(image_name):
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-image_size = 200
+image_size = 350
 
 loader = transforms.Compose(
     [
@@ -46,8 +46,8 @@ loader = transforms.Compose(
     ]
 )
 
-original_img = load_image("sample.jpg")
-style_img = load_image("style.jpg")
+original_img = load_image("sample3.jpg")
+style_img = load_image("style2.jpg")
 
 # generated = torch.randn(original_image.shape, device=device, requires_grad=True)
 generated = original_img.clone().requires_grad_(True)
